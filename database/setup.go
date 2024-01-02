@@ -28,6 +28,7 @@ func Connect() {
 
 	database.AutoMigrate(&models.Users{})
 	database.AutoMigrate(&models.OneTimePassword{})
+	database.AutoMigrate(&models.Transactions{})
 
 	DB = database
 }

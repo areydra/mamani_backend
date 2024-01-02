@@ -23,6 +23,8 @@ func main() {
 	router.POST("/send/otp", controllers.SendOTP)
 	router.POST("/verify/phone-number", controllers.VerifyPhoneNumber)
 	router.GET("/user", controllers.GetUser)
+	router.POST("/transaction", controllers.CreateTransaction)
+	router.GET("/transactions", controllers.GetTransactions)
 
 	router.Run(os.Getenv("LISTEN_URL"))
 }
