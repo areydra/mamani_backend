@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"areydra.com/mamani/api/database"
-	"areydra.com/mamani/api/models"
 	"areydra.com/mamani/api/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -24,12 +23,13 @@ func GetTransactions(c *gin.Context) {
 		return
 	}
 
-	var transactions []models.Transactions
-
-	if err := database.DB.Where("user_id = ?", userId).Find(&transactions).Error; err != nil {
-		c.AbortWithStatusJSON(http.StatusOK, gin.H{"error": LoginError{4001, "Internal error!"}})
-		return
-	}
+	var transactions []map[string]interface{}
+	database.DB.Table("transactions").
+		Select("DATE(created_at) as date, SUM(amount) as total_amount, JSONB_AGG(ROW_TO_JSON(transactions.*)) as transactions").
+		Where("user_id = ?", userId).
+		Group("date").
+		Order("date").
+		Scan(&transactions)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 2003,
