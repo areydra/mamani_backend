@@ -26,6 +26,7 @@ func main() {
 	router.POST("/transaction", controllers.CreateTransaction)
 	router.GET("/transactions", controllers.GetTransactions)
 	router.POST("/wallet", controllers.CreateWallet)
+	router.GET("/wallets", controllers.GetWallets)
 
 	router.Run(os.Getenv("LISTEN_URL"))
 }
