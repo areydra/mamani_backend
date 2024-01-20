@@ -10,10 +10,10 @@ import (
 )
 
 type TransactionInput struct {
-	UserId     uint   `json:"user_id" binding:"required"`
 	WalletId   uint   `json:"wallet_id" binding:"required"`
 	Amount     uint   `json:"amount" binding:"required"`
 	CategoryId uint   `json:"category_id" binding:"required"`
+	Type       uint8  `json:"type" binding:"required"`
 	Note       string `json:"note" binding:"required"`
 	DateTime   int64  `json:"date_time" binding:"required"`
 }
@@ -23,6 +23,7 @@ type TransactionSuccess struct {
 	WalletId   uint   `json:"wallet_id"`
 	Amount     uint   `json:"amount"`
 	CategoryId uint   `json:"category_id"`
+	Type       uint8  `json:"type"`
 	Note       string `json:"note"`
 	DateTime   int64  `json:"date_time"`
 }
@@ -47,6 +48,7 @@ func CreateTransaction(c *gin.Context) {
 		WalletId:   input.WalletId,
 		Amount:     input.Amount,
 		CategoryId: input.CategoryId,
+		Type:       input.Type,
 		Note:       input.Note,
 		DateTime:   input.DateTime,
 	}
@@ -60,6 +62,7 @@ func CreateTransaction(c *gin.Context) {
 			transaction.WalletId,
 			transaction.Amount,
 			transaction.CategoryId,
+			transaction.Type,
 			transaction.Note,
 			transaction.DateTime,
 		},
