@@ -12,9 +12,6 @@ import (
 func main() {
 	utils.LoadEnv("staging")
 
-	// uncomment line below before build golang app
-	// gin.SetMode(gin.ReleaseMode)
-
 	router := gin.Default()
 	database.Connect()
 
