@@ -36,12 +36,12 @@ func VerifyPhoneNumber(c *gin.Context) {
 	var dataOtp models.OneTimePassword
 
 	if err := database.DB.Where("user_id = ?", userId).First(&dataOtp).Error; err != nil {
-		c.AbortWithStatusJSON(http.StatusOK, gin.H{"error": LoginError{4001, "Kode OTP tidak valid!"}})
+		c.AbortWithStatusJSON(http.StatusOK, gin.H{"error": Error{4001, "Kode OTP tidak valid!"}})
 		return
 	}
 
 	if dataOtp.OneTimePassword != input.OTP || dataOtp.IsVerified == 1 {
-		c.AbortWithStatusJSON(http.StatusOK, gin.H{"error": LoginError{4001, "Kode OTP tidak valid!"}})
+		c.AbortWithStatusJSON(http.StatusOK, gin.H{"error": Error{4001, "Kode OTP tidak valid!"}})
 		return
 	}
 

@@ -27,7 +27,7 @@ func GetUser(c *gin.Context) {
 	var user models.Users
 
 	if err := database.DB.Where("id = ?", userId).First(&user).Error; err != nil {
-		c.AbortWithStatusJSON(http.StatusOK, gin.H{"error": LoginError{4001, "Internal error!"}})
+		c.AbortWithStatusJSON(http.StatusOK, gin.H{"error": Error{4001, "Internal error!"}})
 		return
 	}
 

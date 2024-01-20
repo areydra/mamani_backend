@@ -27,7 +27,7 @@ func GetWallets(c *gin.Context) {
 	var wallets []models.Wallets
 
 	if err := database.DB.Where("user_id = ?", userId).Find(&wallets).Error; err != nil {
-		c.AbortWithStatusJSON(http.StatusOK, gin.H{"error": LoginError{4001, "Internal error!"}})
+		c.AbortWithStatusJSON(http.StatusOK, gin.H{"error": Error{4001, "Internal error!"}})
 		return
 	}
 

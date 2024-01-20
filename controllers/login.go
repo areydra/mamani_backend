@@ -19,7 +19,7 @@ type LoginSuccses struct {
 	Token string `json:"token" binding:"required"`
 }
 
-type LoginError struct {
+type Error struct {
 	Code    int    `json:"code" binding:"required"`
 	Message string `json:"message" binding:"required"`
 }
@@ -35,12 +35,12 @@ func Login(c *gin.Context) {
 	var user models.Users
 
 	if err := database.DB.Where("email = ?", input.Email).First(&user).Error; err != nil {
-		c.AbortWithStatusJSON(http.StatusOK, gin.H{"error": LoginError{4001, "Email atau password salah!"}})
+		c.AbortWithStatusJSON(http.StatusOK, gin.H{"error": Error{4001, "Email atau password salah!"}})
 		return
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password)); err != nil {
-		c.AbortWithStatusJSON(http.StatusOK, gin.H{"error": LoginError{4001, "Email atau password salah!"}})
+		c.AbortWithStatusJSON(http.StatusOK, gin.H{"error": Error{4001, "Email atau password salah!"}})
 		return
 	}
 

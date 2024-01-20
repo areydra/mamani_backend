@@ -39,7 +39,7 @@ func CreateTransaction(c *gin.Context) {
 	var input TransactionInput
 
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusOK, gin.H{"error": Error{4003, "Masih ada fields kosong!"}})
 		return
 	}
 
