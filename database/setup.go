@@ -30,6 +30,7 @@ func Connect() {
 	database.AutoMigrate(&models.OneTimePassword{})
 	database.AutoMigrate(&models.Transactions{})
 	database.AutoMigrate(&models.Wallets{})
+	database.AutoMigrate(&models.TotalWalletsInformation{})
 
 	DB = database
 }

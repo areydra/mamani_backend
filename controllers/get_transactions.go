@@ -55,7 +55,7 @@ func GetTransactions(c *gin.Context) {
 		if existingData, ok := mappedData[dateString]; ok {
 			// Update existing entry in mappedData
 			existingData.Transactions = append(existingData.Transactions, transaction)
-			if transaction.Type == 0 {
+			if transaction.Type == 1 {
 				existingData.TotalOutcome += transaction.Amount
 			} else {
 				existingData.TotalIncome += transaction.Amount
@@ -67,7 +67,7 @@ func GetTransactions(c *gin.Context) {
 				Transactions: []Transaction{transaction},
 			}
 
-			if transaction.Type == 0 {
+			if transaction.Type == 1 {
 				newEntry.TotalOutcome += transaction.Amount
 			} else {
 				newEntry.TotalIncome += transaction.Amount

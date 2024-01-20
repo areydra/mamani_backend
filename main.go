@@ -29,6 +29,7 @@ func main() {
 	router.POST("/wallet", controllers.CreateWallet)
 	router.GET("/wallets", controllers.GetWallets)
 	router.DELETE("/wallet", controllers.DeleteWallet)
+	router.GET("/wallets/information", controllers.GetTotalWalletsInformation)
 
 	router.Run(os.Getenv("LISTEN_URL"))
 }

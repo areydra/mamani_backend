@@ -53,7 +53,20 @@ func CreateTransaction(c *gin.Context) {
 		DateTime:   input.DateTime,
 	}
 
-	database.DB.Create(&transaction)
+	if err := database.DB.Create(&transaction).Error; err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Update wallet information
+	isIncome := input.Type == 2
+	isSuccessUpdateTotalWallet := UpdateTotalWalletsInformation(userId, isIncome, input.Amount, false)
+	isSuccessUpdateWalletBalance := UpdateWalletBalance(userId, input.WalletId, isIncome, input.Amount)
+
+	if !isSuccessUpdateTotalWallet || !isSuccessUpdateWalletBalance {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Failed to update wallet information"})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 2002,

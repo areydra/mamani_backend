@@ -28,12 +28,30 @@ func DeleteWallet(c *gin.Context) {
 		return
 	}
 
-	wallet := models.Wallets{
-		UserId: userId,
-		ID:     input.ID,
+	var walletInformation models.Wallets
+
+	// Check if the wallet exists before attempting to delete
+	if err := database.DB.Where("user_id = ? AND id = ?", userId, input.ID).First(&walletInformation).Error; err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Wallet not found"})
+		return
 	}
 
-	database.DB.Delete(&wallet)
+	// Save the wallet balance before deletion
+	balance := walletInformation.InitialBalance
+
+	// Delete the wallet
+	if err := database.DB.Delete(&walletInformation).Error; err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Update total wallet information
+	isSuccessUpdateTotalWallet := UpdateTotalWalletsInformation(userId, false, balance, true)
+
+	if !isSuccessUpdateTotalWallet {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Failed to update wallet information"})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":    2006,

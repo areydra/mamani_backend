@@ -18,12 +18,13 @@ type WalletInput struct {
 }
 
 type WalletSuccess struct {
-	ID           uint   `json:"id"`
-	Name         string `json:"name"`
-	Location     string `json:"location"`
-	Emoji        string `json:"emoji"`
-	Balance      uint   `json:"balance"`
-	MonthlyLimit uint   `json:"monthly_limit"`
+	ID             uint   `json:"id"`
+	Name           string `json:"name"`
+	Location       string `json:"location"`
+	Emoji          string `json:"emoji"`
+	Balance        uint   `json:"balance"`
+	InitialBalance uint   `json:"initial_balance"`
+	MonthlyLimit   uint   `json:"monthly_limit"`
 }
 
 func CreateWallet(c *gin.Context) {
@@ -42,15 +43,28 @@ func CreateWallet(c *gin.Context) {
 	}
 
 	wallet := models.Wallets{
-		UserId:       userId,
-		Name:         input.Name,
-		Location:     input.Location,
-		Emoji:        input.Emoji,
-		Balance:      input.Balance,
-		MonthlyLimit: input.MonthlyLimit,
+		UserId:         userId,
+		Name:           input.Name,
+		Location:       input.Location,
+		Emoji:          input.Emoji,
+		Balance:        input.Balance,
+		InitialBalance: input.Balance,
+		MonthlyLimit:   input.MonthlyLimit,
 	}
 
-	database.DB.Create(&wallet)
+	err := database.DB.Create(&wallet).Error
+
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	isSuccessUpdateTotalWallet := UpdateTotalWalletsInformation(userId, true, input.Balance, false)
+
+	if !isSuccessUpdateTotalWallet {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Failed to update wallet information"})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 2004,
@@ -61,6 +75,7 @@ func CreateWallet(c *gin.Context) {
 			wallet.Emoji,
 			wallet.Balance,
 			wallet.MonthlyLimit,
+			wallet.InitialBalance,
 		},
 		"message": "Berhasil membuat wallet!",
 	})
